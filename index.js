@@ -53,13 +53,20 @@ async function run(){
             const merchants = await cursor.toArray();
             res.send(merchants);
         } )  
+
+        app.get("/merchants/:id", async(req, res) =>{
+            const result = await merchantsCollection
+            .find({_id: ObjectId(req.params.id)})
+            .toArray();
+            res.send(result[0])
+        } )
         
         app.put('/merchants/:id', async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
             console.log(req.params.id);
             const result = await merchantsCollection.updateOne(filter, {
               $set: {
-                merchant: "yes",
+                merchants: req.body.merchants,
               },
             });
             // res.send(result);
