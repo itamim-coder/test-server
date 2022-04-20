@@ -27,7 +27,21 @@ async function run(){
     try{
         await client.connect();
         const database = client.db('testDb'); 
-        const merchantsCollection = database.collection('merchants');   
+        const merchantsCollection = database.collection('merchants');  
+        const usersCollection = database.collection('users');
+        
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            console.log(result);
+            res.json(result);
+        });
+
+        app.get('/users', async (req, res) => {
+            const cursor = usersCollection.find({});
+            const users = await cursor.toArray();
+            res.send(users);
+        } )  
 
         app.post("/merchants", async(req,res) =>{
             // const result = await productsCollection.insertOne(req.body);
@@ -63,7 +77,7 @@ async function run(){
         
         app.put('/merchants/:id', async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
-            console.log(req.params.id);
+            console.log(req.params);
             const result = await merchantsCollection.updateOne(filter, {
               $set: {
                 merchants: req.body.merchants,
@@ -72,6 +86,8 @@ async function run(){
             // res.send(result);
             console.log(result);
         });
+
+     
        
 
 
