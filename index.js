@@ -42,6 +42,12 @@ async function run(){
             const users = await cursor.toArray();
             res.send(users);
         } )  
+            app.get("/users/:id", async(req, res) =>{
+            const result = await usersCollection
+            .find({_id: ObjectId(req.params.id)})
+            .toArray();
+            res.send(result[0])
+        } )
 
         app.post("/merchants", async(req,res) =>{
             // const result = await productsCollection.insertOne(req.body);
