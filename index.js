@@ -29,6 +29,7 @@ async function run(){
         const database = client.db('testDb'); 
         const merchantsCollection = database.collection('merchants');  
         const usersCollection = database.collection('users');
+        const sendMoneyCollection = database.collection('sendmoney');
         
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -48,6 +49,37 @@ async function run(){
             .toArray();
             res.send(result[0])
         } )
+        app.post('/sendmoney', async (req, res) => {
+            const user = req.body;
+            const result = await sendMoneyCollection.insertOne(user);
+            console.log(result);
+            res.json(result);
+        });
+        app.get('/sendmoney', async (req, res) => {
+            const cursor = sendMoneyCollection.find({});
+            const sendmoney = await cursor.toArray();
+            res.send(sendmoney);
+        } ) 
+             app.get("/sendmoney/:email", async (req, res) =>{
+            const result = await sendMoneyCollection
+            .find({ email: req.params.email })
+            .toArray();
+            res.send(result);
+        })
+        // app.put('/sendmoney', async (req, res) => {
+        //     const sendmoney = req.body;
+        //     console.log(req.body.receiver);
+        //     // const filter = { email: sendmoney.senderEmail };
+        //     const updateDoc = { $set: {
+        //         receiver : req.body.receiver,
+        //         sendAmount : req.body.sendAmount,
+
+
+        //     } };
+        //     const result = await usersCollection.updateOne(updateDoc);
+        //     console.log(result);
+        //     res.json(result);
+        // });
 
         app.post("/merchants", async(req,res) =>{
             // const result = await productsCollection.insertOne(req.body);
