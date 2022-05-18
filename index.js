@@ -49,6 +49,43 @@ async function run(){
             .toArray();
             res.send(result[0])
         } )
+
+        app.put('/users/:email', async (req, res) => {
+            console.log(req.params.email);
+            const param = req.params.email;
+            const split = param.split("_");
+
+
+
+            const email = split[0];
+            const amount = split[1];
+            const sendAmount = split[2];
+
+            console.log(email, amount, sendAmount);
+
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    sendMoney: sendAmount,
+                    addMoney: amount,
+                },
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+
+            console.log(result);
+            res.json(result);
+            // console.log(result);
+
+
+        })
+        // app.get("/users/:email", async (req, res) =>{
+        //     const result = await usersCollection
+        //     .find({ email: req.params.email })
+        //     .toArray();
+        //     res.send(result);
+        // })
+
         app.post('/sendmoney', async (req, res) => {
             const user = req.body;
             const result = await sendMoneyCollection.insertOne(user);
@@ -66,20 +103,11 @@ async function run(){
             .toArray();
             res.send(result);
         })
-        // app.put('/sendmoney', async (req, res) => {
-        //     const sendmoney = req.body;
-        //     console.log(req.body.receiver);
-        //     // const filter = { email: sendmoney.senderEmail };
-        //     const updateDoc = { $set: {
-        //         receiver : req.body.receiver,
-        //         sendAmount : req.body.sendAmount,
 
 
-        //     } };
-        //     const result = await usersCollection.updateOne(updateDoc);
-        //     console.log(result);
-        //     res.json(result);
-        // });
+      
+
+
 
         app.post("/merchants", async(req,res) =>{
             // const result = await productsCollection.insertOne(req.body);
